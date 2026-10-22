@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lynox - JavaScript WhatsApp library</title>
+  <meta name="description" content="Lynox is a community-maintained JavaScript library for WhatsApp Web automation, based on Baileys.">
+  <meta name="theme-color" content="#0b0b0f">
+  <style>
+    :root {
+      --bg: #0b0b0f;
+      --panel: #13131b;
+      --panel-2: #191923;
+      --text: #f4f4f7;
+      --muted: #a7a7b7;
+      --line: #2a2a38;
+      --accent: #ff3b5c;
+      --accent-2: #ff7a45;
+      --code: #09090d;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(900px 500px at 80% -10%, rgba(255, 59, 92, .18), transparent 60%),
+        radial-gradient(700px 400px at 0% 20%, rgba(255, 122, 69, .10), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1080px, calc(100% - 40px)); margin: 0 auto; }
+    header {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(14px);
+      background: rgba(11, 11, 15, .75);
+      border-bottom: 1px solid var(--line);
+    }
+    nav { display: flex; align-items: center; justify-content: space-between; min-height: 68px; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -.02em; }
+    .mark {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 8px 30px rgba(255, 59, 92, .28);
+      font-size: 18px; font-weight: 900;
+    }
+    .nav-links { display: flex; align-items: center; gap: 22px; color: var(--muted); font-size: 14px; }
+    .nav-links a:hover { color: var(--text); }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 18px; border-radius: 10px; font-weight: 700; font-size: 14px;
+      border: 1px solid var(--line); background: var(--panel);
+    }
+    .btn:hover { border-color: #414156; }
+    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border: 0; color: white; }
+    .hero { padding: 92px 0 58px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: #ffb3c0; background: rgba(255, 59, 92, .10);
+      border: 1px solid rgba(255, 59, 92, .24); padding: 7px 11px; border-radius: 999px;
+    }
+    h1 { font-size: clamp(42px, 7vw, 76px); line-height: 1.02; letter-spacing: -.055em; margin: 22px 0 20px; max-width: 900px; }
+    .grad { background: linear-gradient(100deg, #fff 10%, #ffb3c0 55%, #ff9b6b 95%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { color: var(--muted); font-size: clamp(17px, 2.2vw, 21px); max-width: 720px; margin: 0 0 30px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; color: var(--muted); font-size: 13px; }
+    .pill { border: 1px solid var(--line); background: rgba(19, 19, 27, .72); padding: 7px 11px; border-radius: 999px; }
+    section { padding: 54px 0; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
+    h2 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -.035em; margin: 0; }
+    .section-head p { color: var(--muted); max-width: 500px; margin: 0; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .card {
+      background: linear-gradient(180deg, var(--panel), rgba(19, 19, 27, .55));
+      border: 1px solid var(--line); border-radius: var(--radius); padding: 22px;
+    }
+    .card:hover { border-color: #3a3a4e; transform: translateY(-1px); }
+    .icon {
+      width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center;
+      background: rgba(255, 59, 92, .10); border: 1px solid rgba(255, 59, 92, .18);
+      color: #ff9aab; font-weight: 800; margin-bottom: 14px;
+    }
+    .card h3 { margin: 0 0 7px; font-size: 17px; letter-spacing: -.01em; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+    .quick { display: grid; grid-template-columns: .9fr 1.1fr; gap: 18px; align-items: stretch; }
+    .quick-copy { padding: 26px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+    .quick-copy h2 { margin-bottom: 12px; }
+    .quick-copy p { color: var(--muted); margin: 0 0 18px; }
+    .steps { margin: 0; padding-left: 20px; color: var(--muted); font-size: 14px; }
+    .steps li { margin: 8px 0; }
+    pre {
+      margin: 0; padding: 24px; overflow-x: auto;
+      background: var(--code); border: 1px solid var(--line); border-radius: var(--radius);
+      color: #d7d7e2; font: 13.5px/1.75 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+    .c { color: #77778a; }
+    .k { color: #ff8fa2; }
+    .s { color: #ffc48a; }
+    .f { color: #9ed6ff; }
+    .note {
+      display: flex; gap: 14px; align-items: flex-start;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: var(--panel); padding: 18px 20px; color: var(--muted); font-size: 14px;
+    }
+    .note strong { color: var(--text); }
+    footer { border-top: 1px solid var(--line); padding: 30px 0 44px; color: var(--muted); font-size: 13px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
+    .footer-links a:hover { color: var(--text); }
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+      .quick { grid-template-columns: 1fr; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 10px; }
+    }
+    @media (max-width: 620px) {
+      .nav-links { display: none; }
+      .grid { grid-template-columns: 1fr; }
+      .hero { padding-top: 64px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <nav>
+        <a class="brand" href="#top" aria-label="Lynox home">
+          <span class="mark">L</span>
+          <span>Lynox</span>
+        </a>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#quick-start">Quick start</a>
+          <a href="https://github.com/lyn0x-dev/baileys-by-lynox" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+        <a class="btn" href="https://github.com/lyn0x-dev/baileys-by-lynox" target="_blank" rel="noreferrer">View source</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <span class="eyebrow">JavaScript library for WhatsApp Web</span>
+        <h1>A <span class="grad">Baileys</span> build for modern WhatsApp automation.</h1>
+        <p class="lead">Lynox is a community-maintained JavaScript library based on Baileys. Connect a WhatsApp Web session, handle messages, media, groups, and newsletters with a familiar Node.js API.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://github.com/lyn0x-dev/baileys-by-lynox" target="_blank" rel="noreferrer">Get started on GitHub</a>
+          <a class="btn" href="#quick-start">Read quick start</a>
+        </div>
+        <div class="meta">
+          <span class="pill">Node.js 22+</span>
+          <span class="pill">CommonJS</span>
+          <span class="pill">TypeScript declarations</span>
+          <span class="pill">MIT licensed</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Built for real bot projects</h2>
+          <p>A focused API with the pieces needed for production WhatsApp integrations, without hiding the protocol details.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <div class="icon">01</div>
+            <h3>Socket connection</h3>
+            <p>QR code and pairing code login, reconnect handling, and event-driven socket lifecycle.</p>
+          </article>
+          <article class="card">
+            <div class="icon">02</div>
+            <h3>Authentication state</h3>
+            <p>Pluggable auth storage with multi-file support and helpers for persistent sessions.</p>
+          </article>
+          <article class="card">
+            <div class="icon">03</div>
+            <h3>Messaging</h3>
+            <p>Send text, media, reactions, replies, polls, and interactive messages using Baileys payloads.</p>
+          </article>
+          <article class="card">
+            <div class="icon">04</div>
+            <h3>Media pipeline</h3>
+            <p>Upload, download, and process images, video, audio, documents, and stickers.</p>
+          </article>
+          <article class="card">
+            <div class="icon">05</div>
+            <h3>Groups and chats</h3>
+            <p>Group metadata, participants, chat state, and common moderation operations.</p>
+          </article>
+          <article class="card">
+            <div class="icon">06</div>
+            <h3>Newsletters</h3>
+            <p>Follow, unfollow, and work with WhatsApp newsletter and channel updates.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="quick-start">
+      <div class="wrap">
+        <div class="quick">
+          <div class="quick-copy">
+            <h2>Quick start</h2>
+            <p>Clone the library, install dependencies, and connect a session from your Node.js project.</p>
+            <ol class="steps">
+              <li>Use Node.js 22 or newer.</li>
+              <li>Install the repository locally.</li>
+              <li>Connect with QR or pairing code.</li>
+              <li>Listen for messages and events.</li>
+            </ol>
+          </div>
+          <pre><code><span class="c"># clone the library</span>
+git clone https://github.com/lyn0x-dev/baileys-by-lynox.git
+<span class="k">cd</span> baileys-by-lynox
+npm install
+
+<span class="c">// index.js</span>
+<span class="k">const</span> makeWASocket = <span class="f">require</span>(<span class="s">'./lib'</span>)
+<span class="k">const</span> { useMultiFileAuthState } = <span class="f">require</span>(<span class="s">'./lib/Utils'</span>)
+
+<span class="k">const</span> <span class="f">start</span> = <span class="k">async</span> () =&gt; {
+  <span class="k">const</span> { state, saveCreds } =
+    <span class="k">await</span> <span class="f">useMultiFileAuthState</span>(<span class="s">'auth'</span>)
+
+  <span class="k">const</span> sock = <span class="f">makeWASocket</span>({ auth: state })
+
+  sock.ev.on(<span class="s">'creds.update'</span>, saveCreds)
+  sock.ev.on(<span class="s">'messages.upsert'</span>, ({ messages }) =&gt; {
+    console.log(messages)
+  })
+}
+
+<span class="f">start</span>()</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="note">
+          <span class="mark" style="flex:0 0 auto">!</span>
+          <div><strong>Unofficial project.</strong> Lynox is not affiliated with WhatsApp, Meta, or the original Baileys maintainers. Use it responsibly and follow WhatsApp's terms and applicable laws.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span>Lynox - JavaScript WhatsApp library</span>
+      <div class="footer-links">
+        <a href="https://github.com/lyn0x-dev/baileys-by-lynox" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://github.com/lyn0x-dev/baileys-by-lynox/issues" target="_blank" rel="noreferrer">Issues</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
